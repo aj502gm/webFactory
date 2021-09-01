@@ -1,0 +1,11 @@
+input[type="text"], .texto{
+    background: #1D1E22;
+    color: white;
+}
+h5{
+    color: grey;
+}
+.wrap{
+    width:33%;
+    height: 300px;
+}
