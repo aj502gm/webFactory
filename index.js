@@ -7,7 +7,7 @@ const outputTxt = document.getElementById('outputTxt');
 //-----------------
 let cssTemplate = '<style type="text/css"></style>';
 let jsTemplate = '<script type = "text/javascript"></script>';
-let bdTemplate = `<body><script type = "text/javascript"></script></body>`; //El script tag debería ir dentro del cuerpo??
+let bdTemplate = `<body>${jsTemplate}</body>`; //El script tag debería ir dentro del cuerpo??
 //HTML TEMPLATE SERÁ EL NUEVO CONTENIDO DEL OUTPUT
 let htmlTemplate = 
 `<!doctype html>
@@ -21,7 +21,7 @@ let htmlTemplate =
 </html>`;
 
 htmlTxt.addEventListener('input', () => { //SI FUNCIONA
-    htmlTemplate = htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`);
+    htmlTemplate = htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`); //DENTRO DEL BODY VAN LAS TAGS Y HASTA DESPUÉS EL SCRIPT
     bdTemplate = `<body>${htmlTxt.value} ${jsTemplate}</body>`;
     outputTxt.innerHTML = htmlTemplate;
     console.log(htmlTemplate);
