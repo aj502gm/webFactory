@@ -2,12 +2,12 @@ let zip = new JSZip(); //ZIP COMPRESSOR
 const htmlTxt = document.getElementById('htmlTxt'); //input html
 const cssTxt = document.getElementById('cssTxt');
 const jsTxt = document.getElementById('jsTxt');//input js
-
-const outputTxt = document.getElementById('outputTxt');
+const outputTxt = document.getElementById('outputTxt').contentWindow.document;
+//outputTxt.open();
 //-----------------
 let cssTemplate = '<style type="text/css"></style>';
-let jsTemplate = '<script type = "text/javascript"></script>';
-let bdTemplate = `<body>${jsTemplate}</body>`; //El script tag debería ir dentro del cuerpo??
+let jsTemplate = '<script></script>';
+let bdTemplate = `<body><script></script></body>`; //El script tag debería ir dentro del cuerpo??
 //HTML TEMPLATE SERÁ EL NUEVO CONTENIDO DEL OUTPUT
 let htmlTemplate = 
 `<!doctype html>
@@ -17,27 +17,30 @@ let htmlTemplate =
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style type="text/css"></style>
     </head>
-    <body><script type = "text/javascript"></script></body>
+    <body><script></script></body>
 </html>`;
 
-htmlTxt.addEventListener('input', () => { //SI FUNCIONA
+htmlTxt.addEventListener('input', (event) => { //SI FUNCIONA
+   
     htmlTemplate = htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`); //DENTRO DEL BODY VAN LAS TAGS Y HASTA DESPUÉS EL SCRIPT
-    bdTemplate = `<body>${htmlTxt.value} ${jsTemplate}</body>`;
-    outputTxt.innerHTML = htmlTemplate;
+    bdTemplate = `<body>${htmlTxt.value}${jsTemplate}</body>`;
+    
+    updateIframe(htmlTemplate);
     console.log(htmlTemplate);
 });
 cssTxt.addEventListener('input', () => { //SI FUNCIONA 
+   
     htmlTemplate = htmlTemplate.replace(cssTemplate,`<style type="text/css">${cssTxt.value}</style>`);
-    cssTemplate = `<style type="text/css">${cssTxt.value}</style>`;
-    outputTxt.innerHTML = htmlTemplate;
+    cssTemplate = `<style type="text/css">${cssTxt.value}</style>`;  
+    updateIframe(htmlTemplate);
     console.log(htmlTemplate);
 });
 
 /*EN ESTA PARTE ES DONDE INTENTO INYECTAR EL SCRIPT DENTRO DEL HTMLTEMPLATE DEL OUTPUT*/
 jsTxt.addEventListener('input', () => {
-    htmlTemplate =  htmlTemplate.replace(jsTemplate,`<script type = "text/javascript">${jsTxt.value}</script>`);
-    jsTemplate =  `<script type = "text/javascript">${jsTxt.value}</script>`;
-    outputTxt.innerHTML =  htmlTemplate;
+    htmlTemplate =  htmlTemplate.replace(jsTemplate,`<script>${jsTxt.value}</script>`);
+    jsTemplate =  `<script>${jsTxt.value}</script>`;
+    updateIframe(htmlTemplate);
     console.log(htmlTemplate); //SI AGREGA CORRECTAMENTE EL CONTENIDO PERO NO SE EJECUTA EL CODIGO
    
 });
@@ -51,4 +54,8 @@ function getAndDownloadData(event){
     // event.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(htmlTemplate) ); //encodeURIComponent(document.getElementById("htmlTxt").value)
     // event.download = "index" + ".html";
     // setTimeout(() => {e.setAttribute('href', '#') }, 1);
+}
+function updateIframe(origin){
+    var myFrame = $("#outputTxt").contents().find('body');
+    myFrame.html(origin);
 }
