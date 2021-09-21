@@ -69,6 +69,7 @@ function displayDialog(e){
         let files =   Array.from(input.files);
         console.log(files);
     };
+    ///gfdsgdf
     input.click();
   
 }
