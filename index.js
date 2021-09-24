@@ -63,13 +63,18 @@ function updateIframe(origin){
 function displayDialog(e){
     let input = document.createElement('input');
     input.type = 'file';
-    input.accept = (e.target.id === 'htmlSelector')? '.html': (e.target.id === 'cssSelector')? '.css' : '.js';
+   // alert(e.id)
+    input.accept = (e.id === 'htmlSelector')? '.html': (e.id === 'cssSelector')? '.css' : ".js";
+    let outputTxt = (e.id === 'htmlSelector')? 'htmlTxt': (e.id === 'cssSelector')? 'cssTxt' : "jsTxt";
     input.onchange = _ => {
     // you can use this method to get file and perform respective operations
         let files =   Array.from(input.files);
-        console.log(files);
+        let reader = new FileReader();
+
+        reader.onload = () => document.getElementById(outputTxt).value = reader.result;
+        reader.readAsText(files[0]);
+    
     };
     ///gfdsgdf
     input.click();
-  
 }
