@@ -1,4 +1,4 @@
-let zip = new JSZip(); //ZIP COMPRESSOR
+//let zip = new JSZip(); //ZIP COMPRESSOR
 const htmlTxt = document.getElementById('htmlTxt'); //input html
 const cssTxt = document.getElementById('cssTxt');
 const jsTxt = document.getElementById('jsTxt');//input js
@@ -21,60 +21,65 @@ let htmlTemplate =
 </html>`;
 
 htmlTxt.addEventListener('input', (event) => { //SI FUNCIONA
-   
+    
     htmlTemplate = htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`); //DENTRO DEL BODY VAN LAS TAGS Y HASTA DESPUÉS EL SCRIPT
     bdTemplate = `<body>${htmlTxt.value}${jsTemplate}</body>`;
-    
     updateIframe(htmlTemplate);
-    console.log(htmlTemplate);
 });
 cssTxt.addEventListener('input', () => { //SI FUNCIONA 
-   
     htmlTemplate = htmlTemplate.replace(cssTemplate,`<style type="text/css">${cssTxt.value}</style>`);
     cssTemplate = `<style type="text/css">${cssTxt.value}</style>`;  
     updateIframe(htmlTemplate);
-    console.log(htmlTemplate);
 });
 
-/*EN ESTA PARTE ES DONDE INTENTO INYECTAR EL SCRIPT DENTRO DEL HTMLTEMPLATE DEL OUTPUT*/
 jsTxt.addEventListener('input', () => {
     htmlTemplate =  htmlTemplate.replace(jsTemplate,`<script>${jsTxt.value}</script>`);
     jsTemplate =  `<script>${jsTxt.value}</script>`;
     updateIframe(htmlTemplate);
-    console.log(htmlTemplate); //SI AGREGA CORRECTAMENTE EL CONTENIDO PERO NO SE EJECUTA EL CODIGO
-   
 });
-/* DOWNLOAD FILES INTO USER'S PC*/
-function getAndDownloadData(event){
-    zip.file("index.html", htmlTemplate);
-    zip.file("styles.css",cssTxt.value);
-    zip.file("app.js", jsTxt.value); 
+// /* DOWNLOAD FILES INTO USER'S PC*/
+// function getAndDownloadData(event){
+//     zip.file("index.html", htmlTemplate);
+//     zip.file("styles.css",cssTxt.value); //default file names
+//     zip.file("app.js", jsTxt.value); 
 
-    zip.generateAsync({type: "blob"}).then( (files) => saveAs(files, "myProject.zip"));
-    // event.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(htmlTemplate) ); //encodeURIComponent(document.getElementById("htmlTxt").value)
-    // event.download = "index" + ".html";
-    // setTimeout(() => {e.setAttribute('href', '#') }, 1);
-}
-function updateIframe(origin){
+//     zip.generateAsync({type: "blob"}).then( (files) => saveAs(files, "myProject.zip")); //.zip
+// }
+function updateIframe(origin){ //REFRESHES IFRAME 
     var myFrame = $("#outputTxt").contents().find('body');
-    myFrame.html(origin);
+    myFrame.html(origin); 
 }
-
 function displayDialog(e){
     let input = document.createElement('input');
     input.type = 'file';
-   // alert(e.id)
     input.accept = (e.id === 'htmlSelector')? '.html': (e.id === 'cssSelector')? '.css' : ".js";
     let outputTxt = (e.id === 'htmlSelector')? 'htmlTxt': (e.id === 'cssSelector')? 'cssTxt' : "jsTxt";
     input.onchange = _ => {
-    // you can use this method to get file and perform respective operations
         let files =   Array.from(input.files);
         let reader = new FileReader();
 
         reader.onload = () => document.getElementById(outputTxt).value = reader.result;
         reader.readAsText(files[0]);
-    
+        //document.getElementById(outputTxt).focus();
+        switch(outputTxt){
+            case 'htmlTxt':
+                htmlTemplate = htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`); //DENTRO DEL BODY VAN LAS TAGS Y HASTA DESPUÉS EL SCRIPT
+                bdTemplate = `<body>${htmlTxt.value}${jsTemplate}</body>`;
+                //htmlTxt.value = "";
+                break;
+            case 'cssTxt':
+                htmlTemplate = htmlTemplate.replace(cssTemplate,`<style type="text/css">${cssTxt.value}</style>`);
+                cssTemplate = `<style type="text/css">${cssTxt.value}</style>`;  
+                //cssTxt.value = "";
+                break;
+            case 'jsTxt':
+                htmlTemplate =  htmlTemplate.replace(jsTemplate,`<script>${jsTxt.value}</script>`);
+                jsTemplate =  `<script>${jsTxt.value}</script>`;
+                //jsTxt.value = "";
+                break;
+        }
+        updateIframe(htmlTemplate);
+       
     };
-    ///gfdsgdf
     input.click();
 }
