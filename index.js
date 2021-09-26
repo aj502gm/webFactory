@@ -1,4 +1,4 @@
-//let zip = new JSZip(); //ZIP COMPRESSOR
+let zip = new JSZip(); //ZIP COMPRESSOR
 const htmlTxt = document.getElementById('htmlTxt'); //input html
 const cssTxt = document.getElementById('cssTxt');
 const jsTxt = document.getElementById('jsTxt');//input js
@@ -37,19 +37,19 @@ jsTxt.addEventListener('input', () => {
     jsTemplate =  `<script>${jsTxt.value}</script>`;
     updateIframe(htmlTemplate);
 });
-// /* DOWNLOAD FILES INTO USER'S PC*/
-// function getAndDownloadData(event){
-//     zip.file("index.html", htmlTemplate);
-//     zip.file("styles.css",cssTxt.value); //default file names
-//     zip.file("app.js", jsTxt.value); 
+/* DOWNLOAD FILES INTO USER'S PC*/
+function getAndDownloadData(event){
+    zip.file("index.html", htmlTemplate);
+    zip.file("styles.css",cssTxt.value); //default file names
+    zip.file("app.js", jsTxt.value); 
 
-//     zip.generateAsync({type: "blob"}).then( (files) => saveAs(files, "myProject.zip")); //.zip
-// }
+    zip.generateAsync({type: "blob"}).then( (files) => saveAs(files, "myProject.zip")); //.zip
+}
 function updateIframe(origin){ //REFRESHES IFRAME 
     var myFrame = $("#outputTxt").contents().find('body');
     myFrame.html(origin); 
 }
-function displayDialog(e){
+async function  displayDialog(e){
     let input = document.createElement('input');
     input.type = 'file';
     input.accept = (e.id === 'htmlSelector')? '.html': (e.id === 'cssSelector')? '.css' : ".js";
@@ -60,21 +60,24 @@ function displayDialog(e){
 
         reader.onload = () => document.getElementById(outputTxt).value = reader.result;
         reader.readAsText(files[0]);
-        //document.getElementById(outputTxt).focus();
+        alert("Archivo cargado con éxito!");
         switch(outputTxt){
             case 'htmlTxt':
-                htmlTemplate = htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`); //DENTRO DEL BODY VAN LAS TAGS Y HASTA DESPUÉS EL SCRIPT
+                htmlTemplate =  htmlTemplate.replace(bdTemplate, `<body>${htmlTxt.value}${jsTemplate}</body>`); //DENTRO DEL BODY VAN LAS TAGS Y HASTA DESPUÉS EL SCRIPT
                 bdTemplate = `<body>${htmlTxt.value}${jsTemplate}</body>`;
-                //htmlTxt.value = "";
+                console.log("html: ", htmlTemplate);
+                updateIframe(htmlTemplate);
                 break;
             case 'cssTxt':
                 htmlTemplate = htmlTemplate.replace(cssTemplate,`<style type="text/css">${cssTxt.value}</style>`);
-                cssTemplate = `<style type="text/css">${cssTxt.value}</style>`;  
+                cssTemplate = `<style type="text/css">${cssTxt.value}</style>`;
+                updateIframe(htmlTemplate);  
                 //cssTxt.value = "";
                 break;
             case 'jsTxt':
                 htmlTemplate =  htmlTemplate.replace(jsTemplate,`<script>${jsTxt.value}</script>`);
                 jsTemplate =  `<script>${jsTxt.value}</script>`;
+                updateIframe(htmlTemplate);
                 //jsTxt.value = "";
                 break;
         }
