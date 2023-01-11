@@ -1,6 +1,7 @@
 input[type="text"], .texto{
     background: #1D1E22;
     color: white;
+    resize: none;
 }
 h5{
     color: grey;
